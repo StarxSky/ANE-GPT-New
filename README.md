@@ -1,4 +1,7 @@
 # ANE-GPT
+### Azure Pipline
+[![Build Status](https://dev.azure.com/starxsky/ANE-GPT/_apis/build/status/ANE-GPT?branchName=main)](https://dev.azure.com/starxsky/ANE-GPT/_build/latest?definitionId=7&branchName=main)
+
 - Optimizations and improvements based on Apple's project ["ML-ANE-Transformers"](https://github.com/Apple/ml-ane-transformers).
 - The adaptation of the GPT-2 model in ANE will be carried out later in the project.
 - In the original official example I made a slight modification to make it a model of GPT-2 architecture,
