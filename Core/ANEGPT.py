@@ -21,6 +21,7 @@ class AppleNeuralEngineGPT(nn.Module) :
         nb_attention_heads=8,
         dropout=0.1,
         return_intermediate_decoder_layers=False,
+        cfg,
         **kwargs
         ) -> None:
         """
@@ -43,6 +44,11 @@ class AppleNeuralEngineGPT(nn.Module) :
         """
         super(AppleNeuralEngineGPT, self).__init__()
 
+
+        self.drop = nn.Dropout2d(0.04)
+        self.embed = nn.Embedding(cfg.vocab, cfg.embed_dim)
+        self.pos_emb = nn.Parameter(torch.zeros(1, cfg.embed_dim, 1, cfg.block_size))
+
         self.decoder = decoder.TransformerDecoder(
             layer=decoder.TransformerDecoderLayer(
                 embed_dim,
@@ -54,15 +60,16 @@ class AppleNeuralEngineGPT(nn.Module) :
             ),
             num_layers=nb_dec_layers)
 
+        self.pool = nn.AdaptiveAvgPool2d(cfg.block_size)
+        self.head = nn.Linear(cfg.block_size, cfg.vocab)
         self.return_intermediate_decoder = return_intermediate_decoder_layers
         self.embed_dim = embed_dim
         
     def forward(
         self,
-        decoder_input,
-        decoder_pos_embed=None,
-        decoder_k_mask=None,
-        decoder_qk_mask=None, 
+        inputs, 
+        decoder_k_mask=None, 
+        decoder_qk_mask=None,
         ) :
 
         """
@@ -94,6 +101,12 @@ class AppleNeuralEngineGPT(nn.Module) :
         Use a value of 0 to keep attention unchanged.
         """
 
+        b, lens = inputs.size()
+        x = inputs.unsqueeze(-1)
+        decoder_embed = self.embed(x).permute(0,3,2,1)
+        decoder_pos_embed = self.pos_emb[:, :, :, :lens]
+        decoder_input = self.drop(decoder_embed + decoder_pos_embed)
+
 
         # Verify ranks
         assert_rank(decoder_pos_embed, "decoder_pos_embed", 4)
@@ -106,9 +119,7 @@ class AppleNeuralEngineGPT(nn.Module) :
         assert_shape(decoder_input, "decoder_input",
                      [batch_size, self.embed_dim, 1, tgt_seq_len])
 
-        if decoder_pos_embed is not None:
-            assert_shape(decoder_pos_embed, "decoder_pos_embed",
-                         [batch_size, self.embed_dim, 1, tgt_seq_len])
+        
         if decoder_k_mask is not None:
             assert_shape(decoder_k_mask, "decoder_k_mask",
                          [batch_size, tgt_seq_len, 1, 1])
@@ -118,7 +129,7 @@ class AppleNeuralEngineGPT(nn.Module) :
         
 
         # TransformerDecoder forward pass
-        ANE_GPT_OUT = self.decoder(
+        out = self.decoder(
             decoder_input,
             decoder_k_mask=decoder_k_mask,
             decoder_qk_mask=decoder_qk_mask,
@@ -126,19 +137,8 @@ class AppleNeuralEngineGPT(nn.Module) :
             return_intermediate=self.return_intermediate_decoder,
         )
 
-        return ANE_GPT_OUT
+        out = out.sum(-2)
+        out = self.pool(out)
+        out = self.head(out)
 
-
-
-        
-
-
-
-
-
-
-
-
-
-
-
+        return out
