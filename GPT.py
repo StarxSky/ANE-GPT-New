@@ -20,7 +20,7 @@ class GPT(nn.Module) :
     def __init__(self, cfg=CFG) :
         super(GPT, self).__init__()
 
-        self.ANE_GPT = AppleNeuralEngineGPT(embed_dim=512, cfg=CFG)
+        self.ANE_GPT = AppleNeuralEngineGPT()
 
     def forward(self, inputs) :
        
