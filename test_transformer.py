@@ -31,19 +31,11 @@ logger.setLevel('INFO')
 PSNR_THRESHOLD = 20
 SANITY_CHECK_CPUGPU2ANE_SPEEDUP_FACTOR = 10
 
-TEST_BATCH_SIZE = 2
-TEST_TGT_SEQ_LEN = 256
-TEST_EMBED_DIM = 512
 
 TEST_INPUTS = collections.OrderedDict({
-    'decoder_input':
-    torch.rand(TEST_BATCH_SIZE, TEST_EMBED_DIM, 1, TEST_TGT_SEQ_LEN),
-    'decoder_pos_embed':
-    torch.rand(TEST_BATCH_SIZE, TEST_EMBED_DIM, 1, TEST_TGT_SEQ_LEN),
-    'decoder_k_mask':
-    torch.zeros(TEST_BATCH_SIZE, TEST_TGT_SEQ_LEN, 1, 1),
-    'decoder_qk_mask':
-    torch.zeros(TEST_BATCH_SIZE, TEST_TGT_SEQ_LEN, 1, TEST_TGT_SEQ_LEN),
+    'inputs':
+    torch.LongTensor([[1,2,3,8], [2,3,5,6], [3,3,8,3]]),
+    
 })
 
 
@@ -54,8 +46,7 @@ class TestGPTReferenceImplementation(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.model = ane_gpt.AppleNeuralEngineGPT(
-            embed_dim=TEST_EMBED_DIM)
+        cls.model = ane_gpt.AppleNeuralEngineGPT()
         cls.inputs = TEST_INPUTS
         cls.ref_outputs = cls.model(**cls.inputs)
 
