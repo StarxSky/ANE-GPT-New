@@ -20,11 +20,12 @@ class TransformerDecoder(nn.Module):
     def __init__(self, layer, num_layers):
         super(TransformerDecoder, self).__init__()
 
+
         self.layers = nn.ModuleList(
             [copy.deepcopy(layer) for i in range(num_layers)])
         self.num_layers = num_layers
         self.norm = LayerNormANE(layer.embed_dim)
-
+        
 
     def forward(self, decoder_embed, decoder_pos_embed, decoder_k_mask=None, decoder_qk_mask=None,  return_intermediate=False,early_exit_from_layer_idx=None) :
 
@@ -47,7 +48,7 @@ class TransformerDecoder(nn.Module):
 
         if return_intermediate:
             return torch.stack(intermediates, 0)
-        return self.norm(x)
+        return self.norm(x).sum(-2) # [Batch_size, embed_dim, 1, vocab_size] ===> [batch_size, embed_dim, vocab_size]
 
 
 
