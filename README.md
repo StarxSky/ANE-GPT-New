@@ -16,9 +16,9 @@ and can be optimized and accelerated on the ANE engine.
      # Strat Install 
      >> pip install -r requirements.txt
      
-## Start Testing the ANE-GPT
+## Start Traing the ANE-GPT
     
-    # run 'test_transformers.py'
-    >> python test_transformers.py
+    # run 'Train.py'
+    >> python Train.py
 # [LICENSE](https://github.com/StarxSky/ANE-GPT-New/blob/main/LICENSE.md)
 - This repository uses Apple's original license,Apple reserves the rights to the original code
