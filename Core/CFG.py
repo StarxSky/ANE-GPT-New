@@ -127,8 +127,8 @@ class Trainer :
         # DataParallel wrappers keep raw model object in .module attribute
         raw_model = self.model.module if hasattr(self.model, "module") else self.model
         torch.save(raw_model.state_dict(), 'model.bin')
-        saved_model = torch.jit.script(self.model)
-        saved_model.save('model_jit.bin')
+        #saved_model = torch.jit.script(self.model)
+        #saved_model.save('model_jit.bin')
 
 
 
