@@ -49,7 +49,7 @@ class TrainerCFG :
     final_tokens = 260e9 # (at what point we reach 10% of original LR)
 
 
-    num_workers = 2 # for DataLoader
+    num_workers = 0 # for DataLoader
 
     def __init__(self, **kwargs):
         for k,v in kwargs.items():
