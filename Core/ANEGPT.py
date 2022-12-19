@@ -50,6 +50,9 @@ class AppleNeuralEngineGPT(nn.Module) :
 
 
         b, lens = inputs.size()
+    
+        #assert lens <= self.cfg.block_size, "Cannot forward, model block size is exhausted."
+        
         x = inputs.unsqueeze(-1)
         decoder_embed = self.embed(x).permute(0,3,2,1)
         decoder_pos_embed = self.pos_emb[:, :, :, :lens]
