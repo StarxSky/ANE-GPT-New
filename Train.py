@@ -16,7 +16,7 @@ Trainerconfig = CFG.TrainerCFG#训练配置
 Sample = func.sample#示例
 
 
-pp = 'C:\\Users\\xbj0916\\Desktop\\ANE-GPT-New-main\\datas'#str(input("输入您存放训练数据的文件夹目录："))
+pp = str(input("输入您存放训练数据的文件夹目录："))
 ################
 # 得到文本文件
 def getFiles(dir, suffix): # 查找根目录，文件后缀 
